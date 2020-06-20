@@ -1,0 +1,42 @@
+#!/bin/bash
+#SBATCH --job-name=safety_reddit.contiguous-dropout=0_multitask-weights=0.5,0.1,0.1,0.4,0.2_lr=5e-05_lr-scheduler-patience=3_lr-scheduler-decay=0.9_warmupupdates=1000
+#SBATCH --output=/checkpoint/edinan/20190828/safety_reddit/contiguous-dropout=0_multitask-weights=0.5,0.1,0.1,0.4,0.2_lr=5e-05_lr-scheduler-patience=3_lr-scheduler-decay=0.9_warmupupdates=1000/stdout.%j
+#SBATCH --error=/checkpoint/edinan/20190828/safety_reddit/contiguous-dropout=0_multitask-weights=0.5,0.1,0.1,0.4,0.2_lr=5e-05_lr-scheduler-patience=3_lr-scheduler-decay=0.9_warmupupdates=1000/stderr.%j
+#SBATCH --partition=learnfair
+## make sure we don't clobber log files if jobs get restarted
+#SBATCH --open-mode=append
+#SBATCH --nodes=1
+#SBATCH --time=6:00:00
+## make sure we are told about preempts, and jobs running out of time, 5 min beforehand
+#SBATCH --signal=USR1@60
+## number of cpus *per task*. Highly recommend this to be 10.
+#SBATCH --cpus-per-task=10
+## srun forks ntasks_per_node times on each node
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=64G
+#SBATCH --gres=gpu:2
+#SBATCH --comment="no comment"
+
+## Stuff to run before the actual code
+echo $SLURM_JOB_ID contiguous-dropout=0_multitask-weights=0.5,0.1,0.1,0.4,0.2_lr=5e-05_lr-scheduler-patience=3_lr-scheduler-decay=0.9_warmupupdates=1000 >> /checkpoint/edinan/20190828/safety_reddit/jobs
+## TODO: maybe uncomment this git stuff
+# echo "Sweep: safety_reddit"
+# echo "# -------- Repo status: ----------------"
+# git -C /private/home/edinan/ParlAI show -q
+# git -C /private/home/edinan/ParlAI diff
+# echo "# ------ Internal repo status: --------"
+# git -C /private/home/edinan/ParlAI/parlai_internal show -q
+# git -C /private/home/edinan/ParlAI/parlai_internal diff
+# echo "# -------------------------------------"
+
+echo
+nvidia-smi
+
+echo "# -------- BEGIN CALL TO /checkpoint/edinan/20190828/safety_reddit/contiguous-dropout=0_multitask-weights=0.5,0.1,0.1,0.4,0.2_lr=5e-05_lr-scheduler-patience=3_lr-scheduler-decay=0.9_warmupupdates=1000/run.sh --------"
+# -K kills all subtasks if one particular task crashes. This is necessary for
+# distributed training
+srun -K1 bash /checkpoint/edinan/20190828/safety_reddit/contiguous-dropout=0_multitask-weights=0.5,0.1,0.1,0.4,0.2_lr=5e-05_lr-scheduler-patience=3_lr-scheduler-decay=0.9_warmupupdates=1000/run.sh
+
+echo "# -------- FINISHED CALL TO SRUN --------"
+echo
+nvidia-smi
