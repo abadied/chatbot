@@ -1,0 +1,3 @@
+[flake8.extension]
+PAI = parlai.utils.flake8:ParlAIChecker
+
