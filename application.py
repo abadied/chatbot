@@ -9,18 +9,17 @@ trained model.
 """
 
 from parlai.core.params import ParlaiParser
-from parlai.scripts.script import ParlaiScript
 from parlai.core.agents import create_agent
 from parlai.core.worlds import create_task
 from parlai.agents.safe_local_human.safe_local_human import SafeLocalHumanAgent
 import parlai.utils.logging as logging
 import random
 import os
-from parlai.core.opt import Opt
 from flask import Flask, render_template
 from flask import request
 
 application = Flask(__name__)
+
 
 def setup_args(parser=None):
     if parser is None:
@@ -31,7 +30,7 @@ def setup_args(parser=None):
         type='bool',
         default=False,
         help='Set to use a prettytable when displaying '
-        'examples with text candidates',
+             'examples with text candidates',
     )
     parser.add_argument(
         '--display-ignore-fields',
@@ -54,6 +53,7 @@ def setup_args(parser=None):
 world = None
 agent = None
 opt = None
+
 
 @application.route('/', methods=['GET', 'POST'])
 def safe_interactive():
@@ -127,6 +127,3 @@ if __name__ == '__main__':
     application.debug = True
     # application.run(host='0.0.0.0', port=80)
     application.run()
-
-
-
